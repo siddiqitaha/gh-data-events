@@ -1,0 +1,37 @@
+name: Github Workflow Example
+on: 
+    pull_request:
+        types: 
+            - opened
+            - closed
+        branches:
+            - main
+            - 'dev-*'
+            - 'feat/**'
+    workflow_dispatch:
+    push:
+        branches:
+            - main
+            - 'dev-*'
+            - 'feat/**'
+        paths-ignore:
+            - '.github/workflows/*'
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+      - run: npm install
+      - run: npm run lint
+      - run: npm run test
+      - run: npm run build
+  info:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Print Issue Metadata
+      run: |
+        echo "${{ toJson(github.event) }}"
